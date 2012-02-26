@@ -1,0 +1,5 @@
+mountray-sudo - tray mounter for removabale divices.
+It works in system tray and gave mount/unmount possibilty of hot-plug devices
+
+This verison uses native udev for mounting.
+Need run with SUDO for correct work
