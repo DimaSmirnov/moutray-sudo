@@ -98,33 +98,56 @@ gboolean ReadUdevStat(GtkWidget *label) { // Чтение информации �
 				//printf("Device:		'%s'\n",device_name);
 				//if (vol_label) printf("Volume name:	'%s'\n",vol_label);
 				if (!vol_label) vol_label="Incorrect_volume_name";
+
 				if (!strcmp(action,"add")) { // if connect
 					mode_t mode=0777;
 					strcpy(path, MOUNT_PATH);
 					strcat(path,vol_label);
-					strcat (path,"/");
+					//strcat (path,"/");
 					gtk_status_icon_set_from_file (tray_icon, "/usr/share/pixmaps/mountray/drive-active.png");
 					iconchangestatus=1;
 					int a = drive_mount(dev,mode,fs_type, path); // mounting
 					sprintf(top_text,"%s mounted", vol_label);
 					sprintf(down_text,"Path: %s", path);
-					Create_notify(down_text, top_text, 3000); //ActionOnConnect();
+					Create_notify(down_text, top_text, 3000);
 					free(volumes);
 					gtk_widget_destroy (menu);
 					Create_menu();
 				}
-				else { // if unmount
+				else { // if unmounting, without disconnect
 					gtk_status_icon_set_from_file (tray_icon, "/usr/share/pixmaps/mountray/drive-active.png");
 					iconchangestatus=1;
 					int a = drive_unmount(path);  // UNmounting
 					sprintf(down_text,"Device %s removed", vol_label);
 					sprintf(top_text,"Mountray");
-					Create_notify(down_text, top_text, 3000); //ActionOnDisconnect();
+					Create_notify(down_text, top_text, 3000);
 					free(volumes);
 					gtk_widget_destroy (menu);
 					Create_menu();
 				}
 			}
+
+			/////////////
+			if (!strcmp(action,"change") && !strcmp(dev_type,"disk") ) { // if remove, when mounted
+				for (int i=0;i<volumes_qty;i++) {
+					printf("DEBUG: Path - '%s' \n", path);
+					if (!strcmp(path, volumes[i].mount_path) && volumes[i].ismounted) {
+						gtk_status_icon_set_from_file (tray_icon, "/usr/share/pixmaps/mountray/drive-active.png");
+						iconchangestatus=1;
+						int a = drive_unmount(path);  // UNmounting
+						sprintf(top_text,"Device '%s' is hard removed", volumes[i].vol_name);
+						sprintf(down_text,"Please check it for errors");
+						Create_notify(down_text, top_text, 3000);
+						free(volumes);
+						gtk_widget_destroy (menu);
+						Create_menu();
+						break;
+					}
+				}
+
+			}
+
+			///////////////
 			udev_device_unref(device);
 		}
 	return TRUE;

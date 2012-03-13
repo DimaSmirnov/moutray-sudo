@@ -4,9 +4,7 @@ char down_text[100], top_text[100];
 struct udev *udev;
 struct  vols{   // -- массив разделов
 		int ismounted; // Монтирован ли раздел ?
-		//const char *drv_name; // Название устройства
 		const char *vol_name; // Название раздела
-		//const char *dev_name; // Название устройства
 		const char *mount_path; // Путь монтирования
 		const char *mount_options; // Опции монтирования
 }; vols *volumes;
@@ -43,7 +41,7 @@ while (mn_tab = getmntent(file)) {
 	if (strstr(mnt_fsname,"/dev/") && strcmp(mnt_dir,"/") && strcmp(mnt_dir,"/home") && strcmp(mnt_dir,"/boot")) {
 			//printf("Number: %d\n", c);
 			//printf("mtab: ---------------------\n");
-			printf("Mount point: %s\n", mnt_dir);
+			printf("DEBUG: Mount point - '%s' \n", mnt_dir);
 			//printf("Mount FS type: %s\n", mnt_type);
 			//printf("Mount FS name: %s\n", mnt_fsname);
 			//printf("Mount options: %s\n", mnt_opts);
