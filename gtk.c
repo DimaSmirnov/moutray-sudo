@@ -7,7 +7,6 @@ struct udev_monitor *mon;
 char device_name[100], path[100];
 GtkStatusIcon *tray_icon;
 GtkWidget *menu, *menuitem, *widget, *image, *sep;
-//GIcon *drive_icon;
 GtkIconSize icon_size;
 
 /////////////////////////////////////
@@ -20,7 +19,6 @@ void ActionOnQuit() {
 /////////////////////////////////////
 void ActionOnDriveClick(GtkWidget *widget, GdkEvent *event) {
 	const gchar *name = gtk_widget_get_name(widget);
-	//printf("Action with volume: %s\n", name);
 	for (int i=0;i<volumes_qty;i++) {
 		if (!strcmp(volumes[i].vol_name,name)) {
 			gtk_status_icon_set_from_file (tray_icon, "/usr/share/pixmaps/mountray/drive-active.png");
@@ -95,15 +93,13 @@ gboolean ReadUdevStat(GtkWidget *label) { // Чтение информации �
 				strcpy(device_name, udev_device_get_property_value(device,"ID_VENDOR"));
 				strcat (device_name," ");
 				strcat (device_name, udev_device_get_property_value(device,"ID_MODEL"));
-				//printf("Device:		'%s'\n",device_name);
-				//if (vol_label) printf("Volume name:	'%s'\n",vol_label);
+				//printf("DEBUG: Volume name - '%s'\n",vol_label);
 				if (!vol_label) vol_label="Incorrect_volume_name";
 
 				if (!strcmp(action,"add")) { // if connect
 					mode_t mode=0777;
 					strcpy(path, MOUNT_PATH);
 					strcat(path,vol_label);
-					//strcat (path,"/");
 					gtk_status_icon_set_from_file (tray_icon, "/usr/share/pixmaps/mountray/drive-active.png");
 					iconchangestatus=1;
 					int a = drive_mount(dev,mode,fs_type, path); // mounting
@@ -126,7 +122,6 @@ gboolean ReadUdevStat(GtkWidget *label) { // Чтение информации �
 					Create_menu();
 				}
 			}
-
 			/////////////
 			if (!strcmp(action,"change") && !strcmp(dev_type,"disk") ) { // if remove, when mounted
 				for (int i=0;i<volumes_qty;i++) {
@@ -144,9 +139,7 @@ gboolean ReadUdevStat(GtkWidget *label) { // Чтение информации �
 						break;
 					}
 				}
-
 			}
-
 			///////////////
 			udev_device_unref(device);
 		}
